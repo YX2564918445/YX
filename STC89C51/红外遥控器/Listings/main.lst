@@ -1,0 +1,138 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 20:05:02 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          # include "reg52.h"
+   2          
+   3          sbit IRED=P3^2;
+   4          sbit BEEP = P2^5;
+   5          
+   6          #define BEEP_KEY_VALUE          0X45
+   7          
+   8          unsigned char gired_data[4];//存储4个字节接收码（地址码+地址反码+控制码+控制反码）
+   9          
+  10          void delay_10us(unsigned int ten_us)
+  11          {
+  12   1              while(ten_us--);        
+  13   1      }
+  14          
+  15          void delay_ms(unsigned int ms)
+  16          {
+  17   1              unsigned int i,j;
+  18   1              for(i=ms;i>0;i--)
+  19   1                      for(j=110;j>0;j--);
+  20   1      }
+  21          
+  22          void beep()
+  23          {
+  24   1              BEEP = ~BEEP;
+  25   1              delay_10us(10);
+  26   1      }
+  27          
+  28          void main()
+  29          {       
+  30   1              unsigned char ired_buf[3];
+  31   1              unsigned char key_cnt_beep=0;
+  32   1              unsigned char ired_tempx=0;
+  33   1              unsigned char ired_tempy=0;
+  34   1              IT0=1;  //下降沿触发
+  35   1              EX0=1;  //打开中断0允许
+  36   1              EA=1;   //打开总中断
+  37   1              IRED=1; //初始化端口
+  38   1              while(1)
+  39   1              {
+  40   2                      ired_tempx=gired_data[2];//保存键值
+  41   2                      if(ired_tempx==BEEP_KEY_VALUE)//如果是第一键按下
+  42   2                      {
+  43   3                              gired_data[2]=0;//清零,等待下次按键按下
+  44   3                              key_cnt_beep++;
+  45   3                              if(key_cnt_beep == 3)key_cnt_beep = 1;
+  46   3                      }
+  47   2                      if(key_cnt_beep==1)
+  48   2                              beep();
+  49   2              }
+  50   1      }
+*** WARNING C280 IN LINE 30 OF main.c: 'ired_buf': unreferenced local variable
+  51                          
+  52                          
+  53          void ired() interrupt 0 //外部中断0服务函数
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 20:05:02 PAGE 2   
+
+  54          {
+  55   1              unsigned char ired_high_time=0;
+  56   1              unsigned int time_cnt=0;
+  57   1              unsigned char i=0,j=0;
+  58   1              
+  59   1              if(IRED==0)
+  60   1              {
+  61   2                      time_cnt=1000;
+  62   2                      while((!IRED)&&(time_cnt))//等待引导信号9ms低电平结束，若超过10ms强制退出
+  63   2                      {
+  64   3                              delay_10us(1);//延时约10us
+  65   3                              time_cnt--;
+  66   3                              if(time_cnt==0)return;          
+  67   3                      }
+  68   2                      if(IRED)//引导信号9ms低电平已过，进入4.5ms高电平
+  69   2                      {
+  70   3                              time_cnt=500;
+  71   3                              while(IRED && time_cnt)//等待引导信号4.5ms高电平结束，若超过5ms强制退出
+  72   3                              {
+  73   4                                      delay_10us(1);
+  74   4                                      time_cnt--;
+  75   4                                      if(time_cnt==0)return;  
+  76   4                              }
+  77   3                              for(i=0;i<4;i++)//循环4次，读取4个字节数据
+  78   3                              {
+  79   4                                      for(j=0;j<8;j++)//循环8次读取每位数据即一个字节
+  80   4                                      {
+  81   5                                              time_cnt=600;
+  82   5                                              while((IRED==0)&&time_cnt)//等待数据1或0前面的0.56ms结束，若超过6ms强制退出
+  83   5                                              {
+  84   6                                                      delay_10us(1);
+  85   6                                                      time_cnt--;
+  86   6                                                      if(time_cnt==0)return;  
+  87   6                                              }
+  88   5                                              time_cnt=20;
+  89   5                                              while(IRED)//等待数据1或0后面的高电平结束，若超过2ms强制退出
+  90   5                                              {
+  91   6                                                      delay_10us(10);//约0.1ms
+  92   6                                                      ired_high_time++;
+  93   6                                                      if(ired_high_time>20)return;    
+  94   6                                              }
+  95   5                                              gired_data[i]>>=1;//先读取的为低位，然后是高位
+  96   5                                              if(ired_high_time>=8)//如果高电平时间大于0.8ms，数据则为1，否则为0
+  97   5                                                      gired_data[i]|=0x80;
+  98   5                                              ired_high_time=0;//重新清零，等待下一次计算时间
+  99   5                                      }
+ 100   4                              }
+ 101   3                      }
+ 102   2                      if(gired_data[2]!=~gired_data[3])//校验控制码与反码，错误则返回
+ 103   2                      {
+ 104   3                              for(i=0;i<4;i++)
+ 105   3                                      gired_data[i]=0;
+ 106   3                              return; 
+ 107   3                      }
+ 108   2              }               
+ 109   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    315    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 20:05:02 PAGE 3   
+
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,191 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 23:12:33 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          
+   4          sbit RS = P2^6;
+   5          sbit RW = P2^5;
+   6          sbit EN = P2^7;
+   7          #define LCD_DATA P0
+   8          #define KEY_MATRIX_PORT P1
+   9          
+  10          char display_buffer[32] = "                                ";
+  11          unsigned char buffer_index = 0;
+  12          
+  13          void delay_ms(unsigned int ms) {
+  14   1          unsigned int i, j;
+  15   1          for(i = 0; i < ms; i++)
+  16   1              for(j = 0; j < 114; j++);
+  17   1      }
+  18          
+  19          void lcd_write_cmd(unsigned char cmd) {
+  20   1          RS = 0;
+  21   1          RW = 0;
+  22   1          LCD_DATA = cmd;
+  23   1          EN = 1;
+  24   1          _nop_();
+  25   1          _nop_();
+  26   1          EN = 0;
+  27   1          delay_ms(2);
+  28   1      }
+  29          
+  30          void lcd_write_data(unsigned char dat) {
+  31   1          RS = 1;
+  32   1          RW = 0;
+  33   1          LCD_DATA = dat;
+  34   1          EN = 1;
+  35   1          _nop_();
+  36   1          _nop_();
+  37   1          EN = 0;
+  38   1          delay_ms(2);
+  39   1      }
+  40          
+  41          void lcd_init() {
+  42   1          delay_ms(15);
+  43   1          lcd_write_cmd(0x38);
+  44   1          delay_ms(5);
+  45   1          lcd_write_cmd(0x38);
+  46   1          delay_ms(5);
+  47   1          lcd_write_cmd(0x38);
+  48   1          delay_ms(5);
+  49   1          lcd_write_cmd(0x0C);
+  50   1          delay_ms(5);
+  51   1          lcd_write_cmd(0x06);
+  52   1          delay_ms(5);
+  53   1          lcd_write_cmd(0x01);
+  54   1          delay_ms(5);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 23:12:33 PAGE 2   
+
+  55   1      }
+  56          
+  57          void update_lcd_display() {
+  58   1          unsigned char i;
+  59   1          lcd_write_cmd(0x80);
+  60   1          for(i = 0; i < 16; i++) {
+  61   2              lcd_write_data(display_buffer[i]);
+  62   2          }
+  63   1          lcd_write_cmd(0xC0);
+  64   1          for(i = 16; i < 32; i++) {
+  65   2              lcd_write_data(display_buffer[i]);
+  66   2          }
+  67   1      }
+  68          
+  69          // 修改后的缓冲区更新函数
+  70          void update_display_buffer(char new_char) {
+  71   1          // 当缓冲区满时，整体上移一行
+  72   1          if (buffer_index >= 32) {
+  73   2              unsigned char i;
+  74   2              // 第一行用第二行覆盖
+  75   2              for (i = 0; i < 16; i++) {
+  76   3                  display_buffer[i] = display_buffer[i+16];
+  77   3              }
+  78   2              // 第二行清空
+  79   2              for (i = 16; i < 32; i++) {
+  80   3                  display_buffer[i] = ' ';
+  81   3              }
+  82   2              buffer_index = 16; // 从第二行开始
+  83   2          }
+  84   1          
+  85   1          // 直接写入当前索引位置
+  86   1          display_buffer[buffer_index] = new_char;
+  87   1          buffer_index++;
+  88   1          
+  89   1          update_lcd_display();
+  90   1      }
+  91          
+  92          unsigned char get_key() {
+  93   1          unsigned char key_value = 0;
+  94   1          KEY_MATRIX_PORT = 0xf7;
+  95   1          if (KEY_MATRIX_PORT != 0xf7) {
+  96   2              delay_ms(10);
+  97   2              switch (KEY_MATRIX_PORT) {
+  98   3                  case 0x77: key_value = 1; break;
+  99   3                  case 0xb7: key_value = 5; break;
+ 100   3                  case 0xd7: key_value = 9; break;
+ 101   3                  case 0xe7: key_value = 13; break;
+ 102   3              }
+ 103   2          }
+ 104   1          while (KEY_MATRIX_PORT != 0xf7);
+ 105   1          
+ 106   1          KEY_MATRIX_PORT = 0xfb;
+ 107   1          if (KEY_MATRIX_PORT != 0xfb) {
+ 108   2              delay_ms(10);
+ 109   2              switch (KEY_MATRIX_PORT) {
+ 110   3                  case 0x7b: key_value = 2; break;
+ 111   3                  case 0xbb: key_value = 6; break;
+ 112   3                  case 0xdb: key_value = 10; break;
+ 113   3                  case 0xeb: key_value = 14; break;
+ 114   3              }
+ 115   2          }
+ 116   1          while (KEY_MATRIX_PORT != 0xfb);
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 23:12:33 PAGE 3   
+
+ 117   1          
+ 118   1          KEY_MATRIX_PORT = 0xfd;
+ 119   1          if (KEY_MATRIX_PORT != 0xfd) {
+ 120   2              delay_ms(10);
+ 121   2              switch (KEY_MATRIX_PORT) {
+ 122   3                  case 0x7d: key_value = 3; break;
+ 123   3                  case 0xbd: key_value = 7; break;
+ 124   3                  case 0xdd: key_value = 11; break;
+ 125   3                  case 0xed: key_value = 15; break;
+ 126   3              }
+ 127   2          }
+ 128   1          while (KEY_MATRIX_PORT != 0xfd);
+ 129   1          
+ 130   1          KEY_MATRIX_PORT = 0xfe;
+ 131   1          if (KEY_MATRIX_PORT != 0xfe) {
+ 132   2              delay_ms(10);
+ 133   2              switch (KEY_MATRIX_PORT) {
+ 134   3                  case 0x7e: key_value = 4; break;
+ 135   3                  case 0xbe: key_value = 8; break;
+ 136   3                  case 0xde: key_value = 12; break;
+ 137   3                  case 0xee: key_value = 16; break;
+ 138   3              }
+ 139   2          }
+ 140   1          while (KEY_MATRIX_PORT != 0xfe);
+ 141   1          
+ 142   1          return key_value - 1;
+ 143   1      }
+ 144          
+ 145          void main() {
+ 146   1          unsigned char key;
+ 147   1          unsigned char i;
+ 148   1          
+ 149   1          lcd_init();
+ 150   1          for (i = 0; i < 32; i++) {
+ 151   2              display_buffer[i] = ' ';
+ 152   2          }
+ 153   1          buffer_index = 0;
+ 154   1          update_lcd_display();
+ 155   1          
+ 156   1          while (1) {
+ 157   2              key = get_key();
+ 158   2              if (key != 0xFF) {
+ 159   3                  char letter = 'A' + key;
+ 160   3                  update_display_buffer(letter);
+ 161   3              }
+ 162   2          }
+ 163   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    503    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     33       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

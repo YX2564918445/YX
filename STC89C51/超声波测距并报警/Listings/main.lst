@@ -1,0 +1,143 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 11:29:58 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <reg52.h>
+   2          #include <intrins.h>
+   3          // 引脚定义
+   4          sbit Trig = P1^0;   // 超声波Trig引脚 -> P1.0
+   5          sbit Echo = P1^1;   // 超声波Echo引脚 -> P1.1
+   6          sbit Buzzer = P2^5; // 无源蜂鸣器 -> P2.5
+   7          // 全局变量
+   8          unsigned int distance = 0;      // 存储测量距离（厘米）
+   9          unsigned int echo_time = 0;     // 存储Echo高电平时间
+  10          bit alarm_enabled = 0;          // 报警使能标志
+  11          //定时器0初始化（用于蜂鸣器）
+  12          void Timer0_Init() 
+  13          {
+  14   1          TMOD &= 0xF0;   // 清除定时器0设置
+  15   1          TMOD |= 0x01;   // 定时器0模式1（16位定时）
+  16   1          TH0 = (65536 - 250) / 256; // 定时250us
+  17   1          TL0 = (65536 - 250) % 256;
+  18   1          ET0 = 1;        // 允许定时器0中断
+  19   1          TR0 = 1;        // 启动定时器0
+  20   1          EA = 1;         // 开启总中断
+  21   1      }
+  22          // 定时器1初始化（用于超声波测距计时）
+  23          void Timer1_Init() 
+  24          {
+  25   1          TMOD &= 0x0F;   // 清除定时器1设置
+  26   1          TMOD |= 0x10;   // 定时器1模式1（16位定时）
+  27   1          TH1 = 0;
+  28   1          TL1 = 0;
+  29   1          ET1 = 0;        // 禁用定时器1中断（只用作计数器）
+  30   1      }
+  31          // 微秒级延迟
+  32          void Delay_us(unsigned int t) 
+  33          {
+  34   1          while (t--) 
+  35   1              {
+  36   2              unsigned char i = 2;  // 根据11.0592MHz调整
+  37   2              while (i--);
+  38   2          }
+  39   1      }
+  40          // 毫秒级延迟
+  41          void Delay_ms(unsigned int t) 
+  42          {
+  43   1          unsigned int i, j;
+  44   1          for (i = 0; i < t; i++)
+  45   1              for (j = 0; j < 110; j++);
+  46   1      }
+  47          // 超声波测距函数
+  48          void Measure_Distance() {
+  49   1          unsigned int timeout = 0; 
+  50   1          // 发送触发信号
+  51   1          Trig = 0;
+  52   1          Delay_us(2);
+  53   1          Trig = 1;
+  54   1          Delay_us(12);   // 持续12us高电平
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 11:29:58 PAGE 2   
+
+  55   1          Trig = 0;
+  56   1          // 等待Echo回波高电平（加入超时保护）
+  57   1          while (!Echo && timeout < 5000) { 
+  58   2              timeout++;
+  59   2              Delay_us(1);
+  60   2          }
+  61   1          if (timeout >= 5000) {
+  62   2              distance = 999; // 超时设置大距离值
+  63   2              return;
+  64   2          }
+  65   1          // 启动定时器1计时
+  66   1          TR1 = 1;
+  67   1          TH1 = 0;
+  68   1          TL1 = 0;
+  69   1          // 等待Echo回波结束（加入超时保护）
+  70   1          timeout = 0;
+  71   1          while (Echo && timeout < 25000) { // 最大测量距离约42cm
+  72   2              timeout++;
+  73   2              Delay_us(1);
+  74   2          }
+  75   1          TR1 = 0;        // 停止计时
+  76   1          // 计算高电平时间（单位：微秒）
+  77   1          echo_time = (TH1 << 8) | TL1;
+  78   1          // 计算距离（单位：厘米）: 时间*声速(340m/s)/2
+  79   1          distance = (unsigned int)(echo_time * 0.017); 
+  80   1      }
+  81          // 主函数
+  82          void main() 
+  83          {
+  84   1          // 初始化所有引脚
+  85   1          Trig = 0;
+  86   1          Echo = 0;
+  87   1          Buzzer = 0;  // 蜂鸣器初始关闭
+  88   1          Timer0_Init();  // 初始化定时器0（蜂鸣器）
+  89   1          Timer1_Init();  // 初始化定时器1（超声波）
+  90   1          while (1) 
+  91   1              {
+  92   2              Measure_Distance();  // 测量距离
+  93   2              // 距离判断与蜂鸣器控制
+  94   2              if (distance < 5) 
+  95   2                  alarm_enabled = 1;  // 使能报警
+  96   2                      else 
+  97   2                  alarm_enabled = 0;  // 关闭报警
+  98   2              Delay_ms(100); // 延时100ms后重新测量
+  99   2          }
+ 100   1      }
+ 101          // 定时器0中断服务函数（蜂鸣器PWM生成）
+ 102          void Timer0_ISR() interrupt 1 
+ 103          {
+ 104   1          static bit buzzer_state = 0;
+ 105   1          // 重新装载定时器初值（250us）
+ 106   1          TH0 = (65536 - 250) / 256;
+ 107   1          TL0 = (65536 - 250) % 256;
+ 108   1          // 如果报警使能，生成2kHz方波
+ 109   1          if (alarm_enabled) 
+ 110   1              {
+ 111   2              buzzer_state = !buzzer_state;  // 翻转状态
+ 112   2              Buzzer = buzzer_state;         // 输出到蜂鸣器
+ 113   2          } else 
+ 114   1              Buzzer = 0;  // 关闭蜂鸣器
+ 115   1      }
+
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 11:29:58 PAGE 3   
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    289    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,107 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 21:40:24 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          # include "reg52.h"
+   2          # define uchar unsigned char
+   3          # define uint unsigned int
+   4          // 引脚定义
+   5          sbit KEY1 = P3^1;       // 左转
+   6          sbit KEY2 = P3^0;       // 停止
+   7          sbit KEY3 = P3^2;       // 右转
+   8          sbit Servo = P1^0;      // 舵机信号线
+   9          // 变量声明
+  10          uint high_time = 6;     // 7.5%占空比，高电平6*0.25ms
+  11          uint i = 0;                     // 循环变量
+  12          uint j = 0;
+  13          
+  14          // 定时器0初始化函数
+  15          void Timer0Init()       
+  16          {
+  17   1              TMOD |= 0X01;   // 设置工作模式为16位定时器
+  18   1              TH0 = 0XFF;             // 定时0.25ms
+  19   1              TL0 = 0X06;
+  20   1              ET0 = 1;
+  21   1              EA = 1;
+  22   1              TR0 = 1; 
+  23   1      }
+  24          
+  25          // 毫秒级延迟函数
+  26          void delay_ms(uint time) 
+  27          {
+  28   1              uint j , i;
+  29   1      
+  30   1              for( i = 0; i < time; i++)
+  31   1      
+  32   1                      for( j = 0; j < 144 ; j++);
+  33   1      }
+  34          
+  35          // 按键扫描函数
+  36          void key_scanf()
+  37          {
+  38   1              if(KEY1 == 0||KEY2 == 0||KEY3 == 0)
+  39   1              {
+  40   2                      delay_ms(10);                           // 消抖 
+  41   2                      if(KEY1 == 0)
+  42   2                      {
+  43   3                              high_time = 2;
+  44   3                      }
+  45   2                      while(KEY1 == 0);
+  46   2                      if(KEY2 == 0)
+  47   2                              high_time = 6;
+  48   2                      while(KEY2 == 0);
+  49   2                      if(KEY3 == 0)
+  50   2                      {
+  51   3                              high_time = 10;
+  52   3                      }
+  53   2                      while(KEY3 == 0);
+  54   2              }
+C51 COMPILER V9.60.7.0   MAIN                                                              07/02/2025 21:40:24 PAGE 2   
+
+  55   1      }
+  56          // 主函数
+  57          void main()
+  58          {
+  59   1              Timer0Init();                                   // 初始化定时器
+  60   1              while(1)
+  61   1              {
+  62   2                      key_scanf();
+  63   2              }
+  64   1      }
+  65          
+  66          // 定时器中断服务函数
+  67          void Timer0Handler() interrupt 1
+  68          {
+  69   1              TH0 = 0XFF;             // 定时0.25ms
+  70   1              TL0 = 0X06;
+  71   1              i++;
+  72   1              if(i < high_time)
+  73   1                      Servo = 1;
+  74   1              else if(i < 80)
+  75   1                      Servo = 0;
+  76   1              else
+  77   1              {
+  78   2                      Servo = 1;
+  79   2                      i = 0;          // 循环变量重置
+  80   2              }
+  81   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    168    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      6    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
