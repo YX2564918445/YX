@@ -1,0 +1,147 @@
+C51 COMPILER V9.60.7.0   MATRIX_KEYS_SMG                                                   06/30/2025 23:25:04 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MATRIX_KEYS_SMG
+OBJECT MODULE PLACED IN .\Objects\matrix_keys_smg.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE matrix_keys_smg.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\List
+                    -ings\matrix_keys_smg.lst) OBJECT(.\Objects\matrix_keys_smg.obj)
+
+line level    source
+
+   1          # include "reg52.h"
+   2          // 引脚定义
+   3          #define KEY_MATRIX_PORT P1              // 宏定义矩阵按键控制口         
+   4          #define SMG_A_DP_PORT   P0              // 宏定义数码管段码口
+   5          sbit LSA=P2^2;                                  // 定义数码管位选控制端口
+   6          sbit LSB=P2^3;
+   7          sbit LSC=P2^4;
+   8          // 变量定义
+   9          unsigned char smg_code[18]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,
+  10                                          0x7f,0x6f,0x77,0x7c,0x39,0x5e,0x79,0x71,0X00};  // 共阴极数码管显示0~F的段码数据
+  11          unsigned char dis_nuber[8] = {17,17,17,17,17,17,17,17,}  ;      // 当前显示的八个键盘标号
+  12          unsigned int i = 0 ;                                                                                    // 循环变量定义
+  13          unsigned char key_number ;                                                                      // 按下按键标号
+  14          
+  15          // 毫秒级延迟函数
+  16          void delay_ms(unsigned int time) 
+  17          {
+  18   1              unsigned int j , i;
+  19   1      
+  20   1              for( i = 0; i < time; i++)
+  21   1      
+  22   1                      for( j = 0; j < 144 ; j++);
+  23   1      }
+  24          
+  25          // 矩阵按键扫描函数
+  26          int key_matrix_ranks_scan(void)
+  27          {
+  28   1              unsigned char key_value=0;
+  29   1              KEY_MATRIX_PORT=0XF7;                           // 给第一列赋值0，其余全为1
+  30   1              if(KEY_MATRIX_PORT!=0XF7)                       // 判断第一列按键是否按下
+  31   1              {
+  32   2                      delay_ms(10);                                   // 消抖
+  33   2                      switch(KEY_MATRIX_PORT)                 // 保存第一列按键按下后的键值   
+  34   2                      {
+  35   3                              case 0X77: key_value=1;break;
+  36   3                              case 0XB7: key_value=5;break;
+  37   3                              case 0XD7: key_value=9;break;
+  38   3                              case 0XE7: key_value=13;break;
+  39   3                      }
+  40   2              }
+  41   1              while(KEY_MATRIX_PORT!=0xF7);           // 等待按键松开 
+  42   1              KEY_MATRIX_PORT=0xFB;                           // 给第二列赋值0，其余全为1
+  43   1              if(KEY_MATRIX_PORT!=0xFB)                       // 判断第二列按键是否按下
+  44   1              {
+  45   2                      delay_ms(10);                                   // 消抖
+  46   2                      switch(KEY_MATRIX_PORT)                 // 保存第二列按键按下后的键值   
+  47   2                      {
+  48   3                              case 0X7B: key_value=2;break;
+  49   3                              case 0XBB: key_value=6;break;
+  50   3                              case 0XDB: key_value=10;break;
+  51   3                              case 0XEB: key_value=14;break;
+  52   3                      }
+  53   2              }
+  54   1              while(KEY_MATRIX_PORT!=0XFB);           // 等待按键松开 
+C51 COMPILER V9.60.7.0   MATRIX_KEYS_SMG                                                   06/30/2025 23:25:04 PAGE 2   
+
+  55   1              KEY_MATRIX_PORT=0XFD;                           // 给第三列赋值0，其余全为1
+  56   1              if(KEY_MATRIX_PORT!=0XFD)                       // 判断第三列按键是否按下
+  57   1              {
+  58   2                      delay_ms(10);                                   // 消抖
+  59   2                      switch(KEY_MATRIX_PORT)                 // 保存第三列按键按下后的键值   
+  60   2                      {
+  61   3                              case 0X7D: key_value=3;break;
+  62   3                              case 0XBD: key_value=7;break;
+  63   3                              case 0XDD: key_value=11;break;
+  64   3                              case 0XED: key_value=15;break;
+  65   3                      }
+  66   2              }
+  67   1              while(KEY_MATRIX_PORT!=0XFD);           // 等待按键松开 
+  68   1              KEY_MATRIX_PORT=0XFE;                           // 给第四列赋值0，其余全为1
+  69   1              if(KEY_MATRIX_PORT!=0XFE)                       // 判断第四列按键是否按下
+  70   1              {
+  71   2                      delay_ms(10);                                   // 消抖
+  72   2                      switch(KEY_MATRIX_PORT)                 // 保存第四列按键按下后的键值   
+  73   2                      {
+  74   3                              case 0X7E: key_value=4;break;
+  75   3                              case 0XBE: key_value=8;break;
+  76   3                              case 0XDE: key_value=12;break;
+  77   3                              case 0XEE: key_value=16;break;
+  78   3                      }
+  79   2              }
+  80   1              while(KEY_MATRIX_PORT!=0XFE);           // 等待按键松开
+  81   1              return key_value;                                       // 返回按下的按键号
+  82   1      }
+  83          
+  84          // 数码管显示函数
+  85          void display()
+  86          {
+  87   1              for(i=0;i<8;i++)
+  88   1              {
+  89   2                      switch(i)                                                               //位选控制
+  90   2                      {
+  91   3                              case 0: LSC=1;LSB=1;LSA=1;break;
+  92   3                              case 1: LSC=1;LSB=1;LSA=0;break;
+  93   3                              case 2: LSC=1;LSB=0;LSA=1;break;
+  94   3                              case 3: LSC=1;LSB=0;LSA=0;break;
+  95   3                              case 4: LSC=0;LSB=1;LSA=1;break;
+  96   3                              case 5: LSC=0;LSB=1;LSA=0;break;
+  97   3                              case 6: LSC=0;LSB=0;LSA=1;break;
+  98   3                              case 7: LSC=0;LSB=0;LSA=0;break;
+  99   3                      }
+ 100   2                      SMG_A_DP_PORT= smg_code[dis_nuber[i]];  //传送段选数据
+ 101   2                      delay_ms(1);                                                    //延时一段时间，等待显示稳定
+ 102   2                      SMG_A_DP_PORT=0X00;                                             //消隐
+ 103   2              }
+ 104   1      }
+ 105          // 主函数
+ 106          void main()
+ 107          {
+ 108   1              while(1)
+ 109   1              {
+ 110   2                      key_number = key_matrix_ranks_scan();   // 储存当前按下按键的标号
+ 111   2                      if ( key_number != 0)                                   // 有按键按下
+ 112   2                      {
+ 113   3                              for(i = 0;i < 7;i++)
+ 114   3                                      dis_nuber[i] = dis_nuber[i+1];  // 键值左移
+ 115   3                              dis_nuber[7] = key_number - 1;          // 新键值放在最右边
+ 116   3                      }
+C51 COMPILER V9.60.7.0   MATRIX_KEYS_SMG                                                   06/30/2025 23:25:04 PAGE 3   
+
+ 117   2                      display();                                                              // 数码管显示
+ 118   2              }
+ 119   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    445    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     29       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\matrix_keys_smg.obj" 
+TO ".\Objects\matrix_keys_SMG" 
+PRINT(".\Listings\matrix_keys_SMG.m51") RAMSIZE(256) 

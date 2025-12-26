@@ -1,0 +1,155 @@
+C51 COMPILER V9.60.7.0   KEY_BEEP                                                          07/01/2025 11:03:56 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE KEY_BEEP
+OBJECT MODULE PLACED IN .\Objects\KEY_BEEP.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE KEY_BEEP.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\KE
+                    -Y_BEEP.lst) OBJECT(.\Objects\KEY_BEEP.obj)
+
+line level    source
+
+   1          # include "reg52.h"
+   2          // 引脚定义
+   3          sbit KEY1 = P3^1;  // 按键1定义
+   4          sbit KEY2 = P3^0;  // 按键2定义
+   5          sbit KEY3 = P3^2;  // 按键3定义
+   6          sbit KEY4 = P3^3;  // 按键4定义
+   7          sbit BEEP = P2^5;  // 蜂鸣器引脚定义
+   8          // 变量定义
+   9          unsigned char KEY_state = 0 ;                                                                           // 按键34状态
+  10          unsigned int current_freq = 2001 ;                                                                      // 当前频率对应周期
+  11          unsigned int max_current_freq = 1 ;                                                                     // 蜂鸣器最大极限频率对应周期
+  12          unsigned int min_current_freq = 2001 ;                                                          // 蜂鸣器最小极限频率对应周期
+  13          unsigned int scale_freq[21] = {382, 340, 303, 286, 255, 227, 203,  
+  14                                                                    191, 170, 152, 143, 128, 114, 101, 
+  15                                                                    95,  85,  76,  72,  64,  57,  51};    // 音阶频率对应周期
+  16          unsigned int scale_index = 1 ;                                                                          // 当前音阶索引
+  17          unsigned int i,n,m = 1;                                             // 循环参数定义
+  18          
+  19          // 毫秒级延迟函数
+  20          void delay_ms(unsigned int time) 
+  21          {
+  22   1              unsigned int j , i;
+  23   1      
+  24   1              for( i = 0; i < time; i++)
+  25   1      
+  26   1                      for( j = 0; j < 144 ; j++);
+  27   1      }
+  28          
+  29          // 10微秒延迟函数
+  30          void delay_10us(unsigned int ten_us)
+  31          {
+  32   1              while(ten_us--);        
+  33   1      }
+  34          
+  35          // 蜂鸣器连续变化频率函数
+  36          void beep_continuity()
+  37          {
+  38   1              unsigned int a = 2;                                                                     // 防止高频时过快
+  39   1              if(m >= 60)
+  40   1                      a = m/10;
+  41   1              else 
+  42   1                      a = 2;
+  43   1              for(n = 1;n <= a ;n++)
+  44   1              {       
+  45   2                      BEEP = ~BEEP;                                                                   // 引脚电平取反
+  46   2                      delay_10us( current_freq);                                              // 按当前周期延时
+  47   2              }
+  48   1      }
+  49          
+  50          // 按键12扫描处理函数
+  51          void key_scan()
+  52          {
+  53   1              // 按键1处理
+  54   1              if ( KEY1 == 0 )                                                                // 按键1按下
+C51 COMPILER V9.60.7.0   KEY_BEEP                                                          07/01/2025 11:03:56 PAGE 2   
+
+  55   1              {       
+  56   2                      delay_ms(10);                                                           // 消抖
+  57   2                      while( KEY1 == 0 )
+  58   2                      {
+  59   3                              beep_continuity();                                              // 调用蜂鸣器连续变化频率函数
+  60   3                              if (current_freq <= max_current_freq)   // 防止超过最小周期
+  61   3                                      current_freq = max_current_freq;
+  62   3                              else 
+  63   3                              {
+  64   4                                      current_freq -= 10;                                     // 周期改变
+  65   4                                      m ++;
+  66   4                              }
+  67   3                      }
+  68   2              }
+  69   1              // 按键2处理
+  70   1              if ( KEY2 == 0 )                                                                // 按键2按下
+  71   1              {       
+  72   2                      delay_ms(10);                                                           // 消抖
+  73   2                      while( KEY2 == 0 )
+  74   2                      {
+  75   3                              beep_continuity();                                              // 调用蜂鸣器连续变化频率函数
+  76   3                              if (current_freq > min_current_freq)    // 防止超过最大周期
+  77   3                                      current_freq = min_current_freq;        
+  78   3                              else 
+  79   3                              {
+  80   4                                      current_freq += 10;                                     // 周期改变
+  81   4                                      m--;
+  82   4                              }
+  83   3                      }       
+  84   2              }
+  85   1      }
+  86          
+  87          // 蜂鸣器音阶变化函数(和按键34处理)
+  88          void beep_scale_freq()
+  89          {
+  90   1              if (KEY3 == 0)                                  // 按键3按下
+  91   1              {
+  92   2                      delay_ms(20);                           // 消抖
+  93   2                      while (KEY3 == 0) ;                     // 等待按键松手
+  94   2                      KEY_state = 1;                          // 按键3状态改变
+  95   2                      scale_index += 1 ;                      // 音阶序号增加
+  96   2                      if (scale_index > 21)           // 防止超出范围
+  97   2                              scale_index = 21 ;
+  98   2              }
+  99   1              if (KEY4 == 0)                          // 按键4按下
+ 100   1              {
+ 101   2                      delay_ms(20);                           // 消抖
+ 102   2                      while(KEY4 == 0);                       // 等待按键松手
+ 103   2                      KEY_state = 1;                          // 按键4状态改变
+ 104   2                      scale_index -= 1 ;                      // 音阶序号减少
+ 105   2                      if (scale_index < 1)            
+ 106   2                              scale_index = 1 ;               // 防止超出范围
+ 107   2              }
+ 108   1              if ( KEY_state == 1)
+ 109   1              {
+ 110   2                      for(i = scale_index * 25 ; i > 0 ; i--) // 蜂鸣器在检测到有按键按下时鸣响对应音阶一段时间
+ 111   2                      {
+ 112   3                              BEEP = ~BEEP;
+ 113   3                              delay_10us(scale_freq[scale_index - 1]);
+ 114   3                      }
+ 115   2                      KEY_state = 0;                          // 按键34状态重置
+ 116   2              }
+C51 COMPILER V9.60.7.0   KEY_BEEP                                                          07/01/2025 11:03:56 PAGE 3   
+
+ 117   1      }
+ 118          
+ 119          // 主函数
+ 120          void main()
+ 121          {
+ 122   1              while(1)
+ 123   1              {
+ 124   2                      key_scan();                                     // 调用按键12扫描处理函数
+ 125   2                      beep_scale_freq();                      // 调用蜂鸣器音阶变化函数
+ 126   2              }
+ 127   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    374    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     57    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

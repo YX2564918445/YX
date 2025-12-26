@@ -1,0 +1,133 @@
+C51 COMPILER V9.60.7.0   COUNTDOWN                                                         07/05/2025 14:15:51 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE COUNTDOWN
+OBJECT MODULE PLACED IN .\Objects\countdown.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE countdown.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\c
+                    -ountdown.lst) OBJECT(.\Objects\countdown.obj)
+
+line level    source
+
+   1          # include "reg52.h"
+   2          
+   3          // 引脚定义
+   4          # define SMG_D P0                                       // 数码管段选
+   5          sbit SMG_A = P2^2;                                      // 数码管位选控制引脚定义
+   6          sbit SMG_B = P2^3;
+   7          sbit SMG_C = P2^4;
+   8          sbit BEEP = P2^5;                                       // 蜂鸣器定义
+   9          
+  10          // 变量定义
+  11          unsigned char smg_code[10]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,
+  12                                          0x7f,0x6f};                     // 共阴极数码管显示0~9的段码数据
+  13          unsigned int now_count = 30;            // 当前倒计时剩余
+  14          unsigned int i = 0;                                 // 计时器循环变量
+  15          
+  16          // 毫秒级延迟函数
+  17          void delay_ms(unsigned int time) 
+  18          {
+  19   1              unsigned int j , i;
+  20   1      
+  21   1              for( i = 0; i < time; i++)
+  22   1      
+  23   1                      for( j = 0; j < 144 ; j++);
+  24   1      }
+  25          
+  26          // 蜂鸣器函数
+  27          void beep()
+  28          {
+  29   1              unsigned int i;
+  30   1              for(i = 0;i < 500;i++)
+  31   1              {
+  32   2                      BEEP = ~BEEP;
+  33   2                      delay_ms(1);
+  34   2              }
+  35   1      }
+  36          
+  37          // 串口发送当前倒计时
+  38          void send_count(count)  
+  39          {
+  40   1              SBUF = count;
+  41   1              while(!TI);             //等待发送数据完成
+  42   1              TI = 0;                 //清除发送完成标志位    
+  43   1      }
+  44          
+  45          //定时器0中断函数
+  46          void time0() interrupt 1 
+  47          {
+  48   1              TH0=0XFC;                                                                       // 给定时器赋初值，定时1ms
+  49   1              TL0=0X18;
+  50   1              i++;
+  51   1              if(i == 1000)
+  52   1              {
+  53   2                      i = 0;
+  54   2                      now_count--;                                                    // 当前倒计时更新
+C51 COMPILER V9.60.7.0   COUNTDOWN                                                         07/05/2025 14:15:51 PAGE 2   
+
+  55   2                      send_count(now_count);                                  // 发送当前倒计时       
+  56   2                      if(now_count == 0)                                              // 倒计时结束
+  57   2                               TR0 = 0;                                                       // 关闭定时器
+  58   2              }
+  59   1      }
+  60          
+  61          // 倒计时显示函数
+  62          void display_count()
+  63          {
+  64   1              SMG_A = 0,SMG_B = 0,SMG_C = 0;                                          // 显示个位
+  65   1              SMG_D = smg_code[now_count % 10];
+  66   1              delay_ms(1);
+  67   1              SMG_D = 0X00;                                                                           // 消隐
+  68   1              if((now_count -(now_count % 10))/10 != 0)
+  69   1              {
+  70   2                      SMG_A = 1,SMG_B = 0,SMG_C = 0;                                  // 显示十位
+  71   2                      SMG_D = smg_code[(now_count -(now_count % 10))/10];
+  72   2                      delay_ms(1);
+  73   2                      SMG_D = 0X00;                                                                   // 消隐
+  74   2              }
+  75   1      }
+  76          // 主函数
+  77          void main()
+  78          {
+  79   1              TMOD|=0X01;                                     // 选择为定时器0模式，工作方式1
+  80   1              TH0=0XFC;                                       // 给定时器赋初值，定时1ms
+  81   1              TL0=0X18;       
+  82   1              ET0=1;                                          // 打开定时器0中断允许
+  83   1              
+  84   1              TMOD|=0X21;                                     // 设置T1工作方式2
+  85   1              SCON=0X50;                                      // 串口模式
+  86   1              TH1=0XFD;                                       // 波特率9600
+  87   1              TL1=0XFD;
+  88   1              TR1 =1;                                 // 启动T1
+  89   1              
+  90   1              EA=1;                                           // 打开总中断
+  91   1              TR0 = 1 ;                                       // 开启定时器
+  92   1              ES = 1;                                         // 允许串口中断
+  93   1              while(1)
+  94   1              {
+  95   2                      if(now_count == 0)                                                                              // 倒计时结束时
+  96   2                      {
+  97   3                              SMG_A = 0,SMG_B = 0,SMG_C = 0;                                          // 显示0
+  98   3                              SMG_D = smg_code[0];
+  99   3                              beep();                                                                                         // 蜂鸣器间歇提醒
+ 100   3                              delay_ms(500);
+ 101   3                      }
+ 102   2                      else
+ 103   2                              display_count();                                                                        // 数码管显示当前倒计时
+ 104   2              }
+ 105   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    274    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.60.7.0   COUNTDOWN                                                         07/05/2025 14:15:51 PAGE 3   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\KEY_BEEP.obj" 
+TO ".\Objects\KEY_BEEP" 
+PRINT(".\Listings\KEY_BEEP.m51") RAMSIZE(256) 

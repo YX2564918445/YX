@@ -1,0 +1,4 @@
+".\Objects\STARTUP.obj",
+".\Objects\countdown.obj" 
+TO ".\Objects\countdown" 
+PRINT(".\Listings\countdown.m51") RAMSIZE(256) 

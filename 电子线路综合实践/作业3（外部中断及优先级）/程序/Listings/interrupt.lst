@@ -1,0 +1,156 @@
+C51 COMPILER V9.60.7.0   INTERRUPT                                                         06/30/2025 14:37:19 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE INTERRUPT
+OBJECT MODULE PLACED IN .\Objects\interrupt.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE interrupt.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\i
+                    -nterrupt.lst) OBJECT(.\Objects\interrupt.obj)
+
+line level    source
+
+   1          # include "reg52.h"
+   2          // 引脚定义
+   3          sbit LED1 = P2^0;               // LED1定义
+   4          sbit BEEP = P2^5;               // 蜂鸣器定义
+   5          sbit KEY1 = P3^1;               // 按键1定义
+   6          sbit KEY2 = P3^0;               // 按键2定义
+   7          sbit KEY3 = P3^2;               // 按键3定义
+   8          sbit KEY4 = P3^3;               // 按键4定义
+   9          # define ALL_LED  P2    // 所有LED控制
+  10          // 变量定义
+  11          unsigned char i  ;      // 循环变量定义
+  12          unsigned char j  ;
+  13          unsigned char mode1 = 0;// 按键1触发状态
+  14          unsigned char mode2 = 0;// 按键2触发状态
+  15          
+  16          // 毫秒级延迟函数
+  17          void delay_ms(unsigned int time) 
+  18          {
+  19   1              unsigned int j , i;
+  20   1      
+  21   1              for( i = 0; i < time; i++)
+  22   1      
+  23   1                      for( j = 0; j < 144 ; j++);
+  24   1      }
+  25          
+  26          // 按键1功能（LED1亮灭十次）
+  27          void key1_function()
+  28          {
+  29   1              for(i = 1;i <= 20;i++)
+  30   1              {
+  31   2                      LED1 = ~LED1;
+  32   2                      delay_ms(500);
+  33   2              }
+  34   1              mode1 = 0;                      // 按键1状态重置
+  35   1      }
+  36          
+  37          // 按键2功能（所有LED亮灭十次）
+  38          void key2_function()
+  39          {
+  40   1              for(i = 1;i <= 10;i++)
+  41   1              {
+  42   2                      ALL_LED = 0X00; // 所有LED亮
+  43   2                      delay_ms(500);
+  44   2                      ALL_LED = 0XFF; // 所有LED灭
+  45   2                      delay_ms(500);
+  46   2              }
+  47   1              mode2 = 0;                      // 按键2状态重置
+  48   1      }
+  49          
+  50          // LED向右循环点亮
+  51          void led_right()
+  52          {
+  53   1              ALL_LED = ~0X01;
+  54   1              for(i = 0 ; i < 8 ; i++ ) 
+C51 COMPILER V9.60.7.0   INTERRUPT                                                         06/30/2025 14:37:19 PAGE 2   
+
+  55   1              {
+  56   2                      ALL_LED = ~(0X01 << i);
+  57   2                      delay_ms(500);
+  58   2              }
+  59   1      }
+  60          
+  61          //蜂鸣器响5次
+  62          void beep()
+  63          {
+  64   1              for(i = 0;i < 5;i++)
+  65   1              {
+  66   2                      for(j = 0; j < 200;j++)
+  67   2                      {
+  68   3                              BEEP = ~BEEP;
+  69   3                              delay_ms(1);
+  70   3                      }
+  71   2                      BEEP = 1;
+  72   2                      delay_ms(300);
+  73   2              }
+  74   1      }
+  75          
+  76          //外部中断0服务函数
+  77          void exti0() interrupt 0 
+  78          {
+  79   1              delay_ms(20);                           // 消抖
+  80   1              if(KEY3==0)                                     // 再次判断K3键是否按下
+  81   1                      led_right();                    // 执行外部中断0功能
+  82   1              ALL_LED = 0XFF;                         // 关闭LED
+  83   1      }
+  84          
+  85          //外部中断1服务函数
+  86          void exti1() interrupt 2 
+  87          {
+  88   1              delay_ms(20);                           // 消抖
+  89   1              if(KEY4==0)                                     // 再次判断K4键是否按下
+  90   1                      beep();                                 // 执行外部中断1功能                    
+  91   1      }
+  92          // 主函数
+  93          void main()
+  94          {
+  95   1              ALL_LED = 0XFF ;                                        // 初始化所有LED的状态
+  96   1              // 外部中断配置
+  97   1              IT0 = 1 ;                           // INT0下降沿触发
+  98   1              IT1 = 1 ;                                                       // INT1下降沿触发
+  99   1              EX0 = 1 ;                                               // 使能INT0
+ 100   1              EX1 = 1 ;                                                       // 使能INT1
+ 101   1              PX1 = 1 ;                                                       // 设置INT1为最高优先级
+ 102   1              EA  = 1 ;                                                       // 全局中断使能
+ 103   1              while(1)
+ 104   1              {
+ 105   2                      if(KEY1 == 0)                                   // 按键1检测
+ 106   2                      {
+ 107   3                              delay_ms(20);                           // 消抖
+ 108   3                              if(KEY1 == 0)
+ 109   3                              {
+ 110   4                                      mode1 = 1;                              // 按键1状态改变
+ 111   4                                      while(KEY1 == 0);               // 等待按键释放
+ 112   4                              }
+ 113   3                      }
+ 114   2                      if(KEY2 == 0)                                   // 按键2检测
+ 115   2                      {
+ 116   3                              delay_ms(20);                           // 消抖
+C51 COMPILER V9.60.7.0   INTERRUPT                                                         06/30/2025 14:37:19 PAGE 3   
+
+ 117   3                              if(KEY2 == 0)
+ 118   3                              {
+ 119   4                                      mode2 = 1;                              // 按键2状态改变
+ 120   4                                      while(KEY2 == 0);               // 等待按键释放
+ 121   4                              }
+ 122   3                      }
+ 123   2                      if(mode1)                                               // 执行按键1功能
+ 124   2                              key1_function();
+ 125   2                      if(mode2)                                               // 执行按键2功能
+ 126   2                              key2_function();
+ 127   2              }
+ 128   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    333    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

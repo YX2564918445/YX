@@ -1,0 +1,275 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    07/01/2025  11:03:56  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+D:\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\KEY_BEEP.obj TO .\Objects\KEY_BEEP PRINT (.\Listings\KEY_BEEP
+>> .m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\KEY_BEEP.obj (KEY_BEEP)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C_INIT)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?IMUL)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?UIDIV)
+
+
+LINK MAP OF MODULE:  .\Objects\KEY_BEEP (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0039H     UNIT         ?DT?KEY_BEEP
+            IDATA   0041H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008EH     UNIT         ?PR?BEEP_SCALE_FREQ?KEY_BEEP
+            CODE    0091H     008CH     UNIT         ?C_C51STARTUP
+            CODE    011DH     0072H     UNIT         ?PR?KEY_SCAN?KEY_BEEP
+            CODE    018FH     0067H     UNIT         ?C?LIB_CODE
+            CODE    01F6H     0045H     UNIT         ?C_INITSEG
+            CODE    023BH     0043H     UNIT         ?PR?BEEP_CONTINUITY?KEY_BEEP
+            CODE    027EH     0020H     UNIT         ?PR?_DELAY_MS?KEY_BEEP
+            CODE    029EH     000BH     UNIT         ?PR?_DELAY_10US?KEY_BEEP
+            CODE    02A9H     0008H     UNIT         ?PR?MAIN?KEY_BEEP
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\KEY_BEEP (?C_STARTUP)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?KEY_BEEP
+  +--> ?C_INITSEG
+
+?PR?MAIN?KEY_BEEP
+  +--> ?PR?KEY_SCAN?KEY_BEEP
+  +--> ?PR?BEEP_SCALE_FREQ?KEY_BEEP
+
+?PR?KEY_SCAN?KEY_BEEP
+  +--> ?PR?_DELAY_MS?KEY_BEEP
+  +--> ?PR?BEEP_CONTINUITY?KEY_BEEP
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/01/2025  11:03:56  PAGE 2
+
+
+
+?PR?BEEP_CONTINUITY?KEY_BEEP
+  +--> ?PR?_DELAY_10US?KEY_BEEP
+
+?PR?BEEP_SCALE_FREQ?KEY_BEEP
+  +--> ?PR?_DELAY_MS?KEY_BEEP
+  +--> ?PR?_DELAY_10US?KEY_BEEP
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\KEY_BEEP (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:0091H         SEGMENT       ?C_C51STARTUP
+  I:0041H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0094H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:0091H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:0091H         LINE#         133
+  C:0093H         LINE#         134
+  C:0094H         LINE#         135
+  C:0095H         LINE#         136
+  C:0097H         LINE#         185
+  C:009AH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        KEY_BEEP
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:0008H         PUBLIC        scale_index
+  D:00A8H         PUBLIC        IE
+  D:000AH         PUBLIC        current_freq
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/01/2025  11:03:56  PAGE 3
+
+
+  D:00B8H         PUBLIC        IP
+  C:0003H         PUBLIC        beep_scale_freq
+  B:00B0H.1       PUBLIC        KEY1
+  D:000CH         PUBLIC        scale_freq
+  B:00B0H.0       PUBLIC        KEY2
+  B:00A0H.5       PUBLIC        BEEP
+  B:00B0H.2       PUBLIC        KEY3
+  B:00B0H.3       PUBLIC        KEY4
+  C:02A9H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  C:029EH         PUBLIC        _delay_10us
+  D:0036H         PUBLIC        min_current_freq
+  D:0038H         PUBLIC        max_current_freq
+  C:011DH         PUBLIC        key_scan
+  C:027EH         PUBLIC        _delay_ms
+  C:023BH         PUBLIC        beep_continuity
+  D:00C8H         PUBLIC        T2CON
+  D:003AH         PUBLIC        i
+  D:003CH         PUBLIC        m
+  D:003EH         PUBLIC        n
+  D:0040H         PUBLIC        KEY_state
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        time
+  -------         DO            
+  D:0002H         SYMBOL        j
+  D:0004H         SYMBOL        i
+  -------         ENDDO         
+  C:027EH         LINE#         20
+  C:027EH         LINE#         21
+  C:027EH         LINE#         24
+  C:0288H         LINE#         26
+  C:029DH         LINE#         27
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          _DELAY_10US
+  D:0006H         SYMBOL        ten_us
+  C:029EH         LINE#         30
+  C:029EH         LINE#         31
+  C:029EH         LINE#         32
+  C:02A8H         LINE#         33
+  -------         ENDPROC       _DELAY_10US
+  -------         PROC          BEEP_CONTINUITY
+  -------         DO            
+  D:0002H         SYMBOL        a
+  -------         ENDDO         
+  C:023BH         LINE#         36
+  C:023BH         LINE#         37
+  C:023BH         LINE#         38
+  C:023BH         LINE#         39
+  C:0246H         LINE#         40
+  C:0257H         LINE#         42
+  C:025BH         LINE#         43
+  C:026AH         LINE#         44
+  C:026AH         LINE#         45
+  C:026CH         LINE#         46
+  C:0273H         LINE#         47
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/01/2025  11:03:56  PAGE 4
+
+
+  C:027DH         LINE#         48
+  -------         ENDPROC       BEEP_CONTINUITY
+  -------         PROC          KEY_SCAN
+  C:011DH         LINE#         51
+  C:011DH         LINE#         52
+  C:011DH         LINE#         54
+  C:0120H         LINE#         55
+  C:0120H         LINE#         56
+  C:0127H         LINE#         57
+  C:012AH         LINE#         58
+  C:012AH         LINE#         59
+  C:012DH         LINE#         60
+  C:0138H         LINE#         61
+  C:0140H         LINE#         63
+  C:0140H         LINE#         64
+  C:014CH         LINE#         65
+  C:0154H         LINE#         66
+  C:0154H         LINE#         67
+  C:0156H         LINE#         68
+  C:0156H         LINE#         70
+  C:0159H         LINE#         71
+  C:0159H         LINE#         72
+  C:0160H         LINE#         73
+  C:0163H         LINE#         74
+  C:0163H         LINE#         75
+  C:0166H         LINE#         76
+  C:0171H         LINE#         77
+  C:0179H         LINE#         79
+  C:0179H         LINE#         80
+  C:0184H         LINE#         81
+  C:018CH         LINE#         82
+  C:018CH         LINE#         83
+  C:018EH         LINE#         84
+  C:018EH         LINE#         85
+  -------         ENDPROC       KEY_SCAN
+  -------         PROC          BEEP_SCALE_FREQ
+  C:0003H         LINE#         88
+  C:0003H         LINE#         89
+  C:0003H         LINE#         90
+  C:0006H         LINE#         91
+  C:0006H         LINE#         92
+  C:000DH         LINE#         93
+  C:0010H         LINE#         94
+  C:0013H         LINE#         95
+  C:001BH         LINE#         96
+  C:0024H         LINE#         97
+  C:002AH         LINE#         98
+  C:002AH         LINE#         99
+  C:002DH         LINE#         100
+  C:002DH         LINE#         101
+  C:0034H         LINE#         102
+  C:0037H         LINE#         103
+  C:003AH         LINE#         104
+  C:0042H         LINE#         105
+  C:004DH         LINE#         106
+  C:0053H         LINE#         107
+  C:0053H         LINE#         108
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  07/01/2025  11:03:56  PAGE 5
+
+
+  C:0059H         LINE#         109
+  C:0059H         LINE#         110
+  C:0072H         LINE#         111
+  C:0072H         LINE#         112
+  C:0074H         LINE#         113
+  C:0083H         LINE#         114
+  C:008DH         LINE#         115
+  C:0090H         LINE#         116
+  C:0090H         LINE#         117
+  -------         ENDPROC       BEEP_SCALE_FREQ
+  -------         PROC          MAIN
+  C:02A9H         LINE#         120
+  C:02A9H         LINE#         121
+  C:02A9H         LINE#         122
+  C:02A9H         LINE#         123
+  C:02A9H         LINE#         124
+  C:02ACH         LINE#         125
+  C:02AFH         LINE#         126
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        KEY_BEEP
+
+  -------         MODULE        ?C?IMUL
+  C:018FH         PUBLIC        ?C?IMUL
+  -------         ENDMOD        ?C?IMUL
+
+  -------         MODULE        ?C?UIDIV
+  C:01A1H         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+Program Size: data=66.0 xdata=0 code=689
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

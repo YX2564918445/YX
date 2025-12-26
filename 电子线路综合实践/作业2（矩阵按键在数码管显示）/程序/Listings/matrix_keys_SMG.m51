@@ -1,0 +1,255 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    06/30/2025  23:25:04  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+D:\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\matrix_keys_smg.obj TO .\Objects\matrix_keys_SMG PRINT (.\Lis
+>> tings\matrix_keys_SMG.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\matrix_keys_smg.obj (MATRIX_KEYS_SMG)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\matrix_keys_SMG (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     001DH     UNIT         ?DT?MATRIX_KEYS_SMG
+            DATA    0025H     0001H     UNIT         _DATA_GROUP_
+            IDATA   0026H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     00E0H     UNIT         ?PR?KEY_MATRIX_RANKS_SCAN?MATRIX_KEYS_SMG
+            CODE    00E3H     008CH     UNIT         ?C_C51STARTUP
+            CODE    016FH     0085H     UNIT         ?PR?DISPLAY?MATRIX_KEYS_SMG
+            CODE    01F4H     0034H     UNIT         ?PR?MAIN?MATRIX_KEYS_SMG
+            CODE    0228H     0024H     UNIT         ?PR?_DELAY_MS?MATRIX_KEYS_SMG
+            CODE    024CH     0023H     UNIT         ?C_INITSEG
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\matrix_keys_SMG (?C_STARTUP)
+
+
+SEGMENT                                            DATA_GROUP 
+  +--> CALLED SEGMENT                            START    LENGTH
+----------------------------------------------------------------
+?C_C51STARTUP                                    -----    -----
+  +--> ?PR?MAIN?MATRIX_KEYS_SMG
+  +--> ?C_INITSEG
+
+?PR?MAIN?MATRIX_KEYS_SMG                         -----    -----
+  +--> ?PR?KEY_MATRIX_RANKS_SCAN?MATRIX_KEYS...
+  +--> ?PR?DISPLAY?MATRIX_KEYS_SMG
+
+?PR?KEY_MATRIX_RANKS_SCAN?MATRIX_KEYS...         0025H    0001H
+  +--> ?PR?_DELAY_MS?MATRIX_KEYS_SMG
+
+?PR?DISPLAY?MATRIX_KEYS_SMG                      -----    -----
+  +--> ?PR?_DELAY_MS?MATRIX_KEYS_SMG
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  06/30/2025  23:25:04  PAGE 2
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\matrix_keys_SMG (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:00E3H         SEGMENT       ?C_C51STARTUP
+  I:0026H         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:00E6H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:00E3H         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:00E3H         LINE#         133
+  C:00E5H         LINE#         134
+  C:00E6H         LINE#         135
+  C:00E7H         LINE#         136
+  C:00E9H         LINE#         185
+  C:00ECH         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        MATRIX_KEYS_SMG
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:01F4H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:0008H         PUBLIC        key_number
+  D:0009H         PUBLIC        dis_nuber
+  D:0011H         PUBLIC        smg_code
+  C:0003H         PUBLIC        key_matrix_ranks_scan
+  C:022CH         PUBLIC        _delay_ms
+  B:00A0H.2       PUBLIC        LSA
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  06/30/2025  23:25:04  PAGE 3
+
+
+  B:00A0H.3       PUBLIC        LSB
+  B:00A0H.4       PUBLIC        LSC
+  D:00C8H         PUBLIC        T2CON
+  D:0023H         PUBLIC        i
+  C:016FH         PUBLIC        display
+  D:00D0H         PUBLIC        PSW
+  C:0228H         SYMBOL        L?0072
+  -------         PROC          L?0071
+  -------         ENDPROC       L?0071
+  C:0228H         SYMBOL        L?0072
+  -------         PROC          _DELAY_MS
+  D:0006H         SYMBOL        time
+  -------         DO            
+  D:0002H         SYMBOL        j
+  D:0004H         SYMBOL        i
+  -------         ENDDO         
+  C:022CH         LINE#         16
+  C:022CH         LINE#         17
+  C:022CH         LINE#         20
+  C:0236H         LINE#         22
+  C:024BH         LINE#         23
+  -------         ENDPROC       _DELAY_MS
+  -------         PROC          KEY_MATRIX_RANKS_SCAN
+  -------         DO            
+  D:0025H         SYMBOL        key_value
+  -------         ENDDO         
+  C:0003H         LINE#         26
+  C:0003H         LINE#         27
+  C:0003H         LINE#         28
+  C:0006H         LINE#         29
+  C:0009H         LINE#         30
+  C:000FH         LINE#         31
+  C:000FH         LINE#         32
+  C:0012H         LINE#         33
+  C:0025H         LINE#         34
+  C:0025H         LINE#         35
+  C:002AH         LINE#         36
+  C:002FH         LINE#         37
+  C:0034H         LINE#         38
+  C:0037H         LINE#         39
+  C:0037H         LINE#         40
+  C:0037H         LINE#         41
+  C:003CH         LINE#         42
+  C:003FH         LINE#         43
+  C:0045H         LINE#         44
+  C:0045H         LINE#         45
+  C:0048H         LINE#         46
+  C:005BH         LINE#         47
+  C:005BH         LINE#         48
+  C:0060H         LINE#         49
+  C:0065H         LINE#         50
+  C:006AH         LINE#         51
+  C:006DH         LINE#         52
+  C:006DH         LINE#         53
+  C:006DH         LINE#         54
+  C:0072H         LINE#         55
+  C:0075H         LINE#         56
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  06/30/2025  23:25:04  PAGE 4
+
+
+  C:007BH         LINE#         57
+  C:007BH         LINE#         58
+  C:007EH         LINE#         59
+  C:0091H         LINE#         60
+  C:0091H         LINE#         61
+  C:0096H         LINE#         62
+  C:009BH         LINE#         63
+  C:00A0H         LINE#         64
+  C:00A3H         LINE#         65
+  C:00A3H         LINE#         66
+  C:00A3H         LINE#         67
+  C:00A8H         LINE#         68
+  C:00ABH         LINE#         69
+  C:00B1H         LINE#         70
+  C:00B1H         LINE#         71
+  C:00B4H         LINE#         72
+  C:00C7H         LINE#         73
+  C:00C7H         LINE#         74
+  C:00CCH         LINE#         75
+  C:00D1H         LINE#         76
+  C:00D6H         LINE#         77
+  C:00D9H         LINE#         78
+  C:00D9H         LINE#         79
+  C:00D9H         LINE#         80
+  C:00DEH         LINE#         81
+  C:00E2H         LINE#         82
+  -------         ENDPROC       KEY_MATRIX_RANKS_SCAN
+  -------         PROC          DISPLAY
+  C:016FH         LINE#         85
+  C:016FH         LINE#         86
+  C:016FH         LINE#         87
+  C:0174H         LINE#         88
+  C:0174H         LINE#         89
+  C:019EH         LINE#         90
+  C:019EH         LINE#         91
+  C:01A2H         LINE#         92
+  C:01A6H         LINE#         93
+  C:01AAH         LINE#         94
+  C:01AEH         LINE#         95
+  C:01B6H         LINE#         96
+  C:01BEH         LINE#         97
+  C:01C6H         LINE#         98
+  C:01CCH         LINE#         99
+  C:01CCH         LINE#         100
+  C:01D8H         LINE#         101
+  C:01DFH         LINE#         102
+  C:01E2H         LINE#         103
+  C:01F3H         LINE#         104
+  -------         ENDPROC       DISPLAY
+  -------         PROC          MAIN
+  C:01F4H         LINE#         106
+  C:01F4H         LINE#         107
+  C:01F4H         LINE#         108
+  C:01F4H         LINE#         109
+  C:01F4H         LINE#         110
+  C:01F9H         LINE#         111
+  C:01FDH         LINE#         112
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  06/30/2025  23:25:04  PAGE 5
+
+
+  C:01FDH         LINE#         113
+  C:0202H         LINE#         114
+  C:021EH         LINE#         115
+  C:0223H         LINE#         116
+  C:0223H         LINE#         117
+  C:0226H         LINE#         118
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MATRIX_KEYS_SMG
+
+Program Size: data=39.0 xdata=0 code=623
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
