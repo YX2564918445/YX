@@ -1,0 +1,187 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2025 20:20:16 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.l
+                    -st) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          
+   3          #define KEY_LINE P2    // 行
+   4          #define KEY_COLUMN P0  // 列
+   5          
+   6          
+   7          sbit BEEP = P3^3;         // 蜂鸣器
+   8          sbit  LED = P3^4;         // LED
+   9          
+  10          unsigned char scale_freq[21] = {96,  85,  76,  72,  64,  57,  50 ,  
+  11                                                                    191, 170, 152, 143, 128, 114, 101 ,
+  12                                                                    382, 340, 303, 286, 255, 227, 202};   
+  13                                                          // 音阶频率对应周期
+  14          
+  15          // 毫秒级延迟函数
+  16          void delay(unsigned int time) 
+  17          {
+  18   1              unsigned int j , i;
+  19   1              for( i = 0; i < time; i++)
+  20   1                      for( j = 0; j < 144 ; j++);
+  21   1      }
+  22          
+  23          // 10us延迟函数
+  24          void delay_10us(unsigned int ten_us)
+  25          {
+  26   1              while(ten_us--);        
+  27   1      }
+  28          
+  29          // 蜂鸣器函数
+  30          void beep()
+  31          {
+  32   1              BEEP = ~BEEP;
+  33   1      }
+  34          
+  35          void main()
+  36          {
+  37   1              while(1)
+  38   1              {
+  39   2                      // 第一列
+  40   2                      KEY_LINE = 0XFF;
+  41   2                      KEY_COLUMN = 0XBF;
+  42   2                      if(KEY_LINE != 0XFF)
+  43   2                      {
+  44   3                              delay(20);
+  45   3                              if(KEY_LINE != 0XFF)
+  46   3                              {
+  47   4                                      LED = 0;
+  48   4                                      while(KEY_LINE == 0XFB) // do' 1
+  49   4                                      {beep();delay_10us(scale_freq[0]);}
+  50   4                                      while(KEY_LINE == 0XFD) // do  8
+  51   4                                      {beep();delay_10us(scale_freq[7]);}
+  52   4                                      while(KEY_LINE == 0XFE) // do, 15
+  53   4                              {       beep();delay_10us(scale_freq[14]);}
+  54   4                              }
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2025 20:20:16 PAGE 2   
+
+  55   3                      }
+  56   2                      // 第二列
+  57   2                      KEY_LINE = 0XFF;
+  58   2                      KEY_COLUMN = 0XDF;
+  59   2                      if(KEY_LINE != 0XFF)
+  60   2                      {
+  61   3                              delay(20);
+  62   3                              if(KEY_LINE != 0XFF)
+  63   3                              {
+  64   4                                      LED = 0;
+  65   4                                      while(KEY_LINE == 0XFB) // re' 2
+  66   4                                      {beep();delay_10us(scale_freq[1]);}
+  67   4                                      while(KEY_LINE == 0XFD) // re  9
+  68   4                                      {beep();delay_10us(scale_freq[8]);}
+  69   4                                      while(KEY_LINE == 0XFE) // re, 16
+  70   4                                      {beep();delay_10us(scale_freq[15]);}
+  71   4                              }
+  72   3                      }
+  73   2                      // 第三列
+  74   2                      KEY_LINE = 0XFF;
+  75   2                      KEY_COLUMN = 0XEF;
+  76   2                      if(KEY_LINE != 0XFF)
+  77   2                      {
+  78   3                              delay(20);
+  79   3                              if(KEY_LINE != 0XFF)
+  80   3                              {
+  81   4                                      LED = 0;
+  82   4                                      while(KEY_LINE == 0XFB) // mi' 3
+  83   4                                      {beep();delay_10us(scale_freq[2]);}
+  84   4                                      while(KEY_LINE == 0XFD) // mi  10
+  85   4                                      {beep();delay_10us(scale_freq[9]);}
+  86   4                                      while(KEY_LINE == 0XFE) // mi, 17
+  87   4                                      {beep();delay_10us(scale_freq[16]);}
+  88   4                              }
+  89   3                      }
+  90   2                      // 第四列
+  91   2                      KEY_LINE = 0XFF;
+  92   2                      KEY_COLUMN = 0XF7;
+  93   2                      if(KEY_LINE != 0XFF)
+  94   2                      {
+  95   3                              delay(20);
+  96   3                              if(KEY_LINE != 0XFF)
+  97   3                              {
+  98   4                                      LED = 0;
+  99   4                                      while(KEY_LINE == 0XFB) // fa' 4
+ 100   4                                      {beep();delay_10us(scale_freq[3]);}
+ 101   4                                      while(KEY_LINE == 0XFD) // fa  11
+ 102   4                                      {beep();delay_10us(scale_freq[10]);}
+ 103   4                                      while(KEY_LINE == 0XFE) // fa, 18
+ 104   4                                      {beep();delay_10us(scale_freq[17]);}
+ 105   4                              }
+ 106   3                      }
+ 107   2                      // 第五列
+ 108   2                      KEY_LINE = 0XFF;
+ 109   2                      KEY_COLUMN = 0XFB;
+ 110   2                      if(KEY_LINE != 0XFF)
+ 111   2                      {
+ 112   3                              delay(20);
+ 113   3                              if(KEY_LINE != 0XFF)
+ 114   3                              {
+ 115   4                                      LED = 0;
+ 116   4                                      while(KEY_LINE == 0XFB) // sol' 5
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2025 20:20:16 PAGE 3   
+
+ 117   4                                      {beep();delay_10us(scale_freq[4]);}
+ 118   4                                      while(KEY_LINE == 0XFD) // sol  12
+ 119   4                                      {beep();delay_10us(scale_freq[11]);}
+ 120   4                                      while(KEY_LINE == 0XFE) // sol, 19
+ 121   4                                      {beep();delay_10us(scale_freq[18]);}
+ 122   4                              }
+ 123   3                      }
+ 124   2                      // 第六列
+ 125   2                      KEY_LINE = 0XFF;
+ 126   2                      KEY_COLUMN = 0XFD;
+ 127   2                      if(KEY_LINE != 0XFF)
+ 128   2                      {
+ 129   3                              delay(20);
+ 130   3                              if(KEY_LINE != 0XFF)
+ 131   3                              {
+ 132   4                                      LED = 0;
+ 133   4                                      while(KEY_LINE == 0XFB) // la' 6
+ 134   4                                      {beep();delay_10us(scale_freq[5]);}
+ 135   4                                      while(KEY_LINE == 0XFD) // la  13
+ 136   4                                      {beep();delay_10us(scale_freq[12]);}
+ 137   4                                      while(KEY_LINE == 0XFE) // la, 20
+ 138   4                                      {beep();delay_10us(scale_freq[19]);}
+ 139   4                              }
+ 140   3                      }
+ 141   2                      // 第七列
+ 142   2                      KEY_LINE = 0XFF;
+ 143   2                      KEY_COLUMN = 0XFE;
+ 144   2                      if(KEY_LINE != 0XFF)
+ 145   2                      {
+ 146   3                              delay(20);
+ 147   3                              {
+ 148   4                                      LED = 0;
+ 149   4                                      while(KEY_LINE == 0XFB) // si' 7
+ 150   4                                      {beep();delay_10us(scale_freq[6]);}
+ 151   4                                      while(KEY_LINE == 0XFD) // si  14
+ 152   4                                      {beep();delay_10us(scale_freq[13]);}
+ 153   4                                      while(KEY_LINE == 0XFE) // si, 21
+ 154   4                                      {beep();delay_10us(scale_freq[20]);}
+ 155   4                              }
+ 156   3                      }
+ 157   2                      LED = 1;
+ 158   2              }
+ 159   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    554    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     21    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
