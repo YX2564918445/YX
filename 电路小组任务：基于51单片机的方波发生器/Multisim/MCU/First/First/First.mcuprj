@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="ASCII"?>
+<MCUProject Schema="67" Class="CMCUProject" Path="" PathAbs="" ProjectType="1">
+<ProjectFolders/>
+<ProjectFiles/>
+<BuildSettings>
+<MCUProjectBuildSettings Class="CMCUProjectBuildSettings" ToolGroupType="-1" IntermediatePath="&amp;ASC.\" IntermediatePathAbs="&amp;UNIC:\Users\asus\Desktop\_uc24efb52a19_uc3ff1a57fa4e8e51_uc953557247673a768465b96ce253d1751f5668\Multisim\MCU\First\First\" OutputPath="&amp;ASC.\" OutputPathAbs="&amp;UNIC:\Users\asus\Desktop\_uc24efb52a19_uc3ff1a57fa4e8e51_uc953557247673a768465b96ce253d1751f5668\Multisim\MCU\First\First\" TargetFileType="6" SimPath="&amp;UNI..\..\..\..\Keil_uc27a0b5e8f\_uc257fa4e8e51_uc953557247673a768465b96ce2751f62105668\Objects\" SimPathAbs="&amp;UNIC:\Users\asus\Desktop\_uc24efb52a19_uc3ff1a57fa4e8e51_uc953557247673a768465b96ce253d1751f5668\Keil_uc27a0b5e8f\_uc257fa4e8e51_uc953557247673a768465b96ce2751f62105668\Objects\" SimFile="&amp;ASCDL.hex" CodeLoadType="0"/>
+</BuildSettings>
+</MCUProject>

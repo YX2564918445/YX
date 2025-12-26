@@ -1,0 +1,240 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    12/16/2025  16:07:15  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+D:\KEIL5\C51\BIN\BL51.EXE .\Objects\STARTUP.obj, .\Objects\main.obj TO .\Objects\DL PRINT (.\Listings\DL.m51) RAMSIZE (2
+>> 56)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\STARTUP.obj (?C_STARTUP)
+  .\Objects\main.obj (MAIN)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LMUL)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?ULDIV)
+  D:\KEIL5\C51\LIB\C51S.LIB (?C?LIMUL)
+
+
+LINK MAP OF MODULE:  .\Objects\DL (?C_STARTUP)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0004H     UNIT         ?DT?MAIN
+            DATA    000CH     0003H     UNIT         _DATA_GROUP_
+            IDATA   000FH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+            CODE    000EH     000CH     UNIT         ?C_C51STARTUP
+                    001AH     0001H                  *** GAP ***
+            CODE    001BH     0003H     ABSOLUTE     
+            CODE    001EH     014AH     UNIT         ?C?LIB_CODE
+            CODE    0168H     0082H     UNIT         ?PR?_SET_PWM_PARAMS?MAIN
+            CODE    01EAH     0012H     UNIT         ?PR?TIMER0_ISR?MAIN
+            CODE    01FCH     0012H     UNIT         ?PR?TIMER1_ISR?MAIN
+            CODE    020EH     0011H     UNIT         ?PR?MAIN?MAIN
+            CODE    021FH     000BH     UNIT         ?PR?TIMER0_INIT?MAIN
+            CODE    022AH     000BH     UNIT         ?PR?TIMER1_INIT?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\DL (?C_STARTUP)
+
+
+SEGMENT                            DATA_GROUP 
+  +--> CALLED SEGMENT            START    LENGTH
+------------------------------------------------
+?C_C51STARTUP                    -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                    -----    -----
+  +--> ?PR?TIMER0_INIT?MAIN
+  +--> ?PR?TIMER1_INIT?MAIN
+  +--> ?PR?_SET_PWM_PARAMS?MAIN
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/16/2025  16:07:15  PAGE 2
+
+
+
+?PR?_SET_PWM_PARAMS?MAIN         000CH    0003H
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\DL (?C_STARTUP)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_STARTUP
+  C:000EH         SEGMENT       ?C_C51STARTUP
+  I:000FH         SEGMENT       ?STACK
+  C:0000H         PUBLIC        ?C_STARTUP
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  D:0083H         SYMBOL        DPH
+  D:0082H         SYMBOL        DPL
+  N:0000H         SYMBOL        IBPSTACK
+  N:0100H         SYMBOL        IBPSTACKTOP
+  N:0080H         SYMBOL        IDATALEN
+  C:0011H         SYMBOL        IDATALOOP
+  N:0000H         SYMBOL        PBPSTACK
+  N:0100H         SYMBOL        PBPSTACKTOP
+  N:0000H         SYMBOL        PDATALEN
+  N:0000H         SYMBOL        PDATASTART
+  N:0000H         SYMBOL        PPAGE
+  N:0000H         SYMBOL        PPAGEENABLE
+  D:00A0H         SYMBOL        PPAGE_SFR
+  D:0081H         SYMBOL        SP
+  C:000EH         SYMBOL        STARTUP1
+  N:0000H         SYMBOL        XBPSTACK
+  N:0000H         SYMBOL        XBPSTACKTOP
+  N:0000H         SYMBOL        XDATALEN
+  N:0000H         SYMBOL        XDATASTART
+  C:0000H         LINE#         126
+  C:000EH         LINE#         133
+  C:0010H         LINE#         134
+  C:0011H         LINE#         135
+  C:0012H         LINE#         136
+  C:0014H         LINE#         185
+  C:0017H         LINE#         196
+  -------         ENDMOD        ?C_STARTUP
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:01EAH         PUBLIC        Timer0_ISR
+  C:01FCH         PUBLIC        Timer1_ISR
+  B:00A8H.7       PUBLIC        EA
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:020EH         PUBLIC        main
+  C:021FH         PUBLIC        Timer0_Init
+  C:022AH         PUBLIC        Timer1_Init
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/16/2025  16:07:15  PAGE 3
+
+
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  B:00A8H.1       PUBLIC        ET0
+  B:00A8H.3       PUBLIC        ET1
+  C:0168H         PUBLIC        _Set_PWM_Params
+  D:008CH         PUBLIC        TH0
+  D:008DH         PUBLIC        TH1
+  B:00A0H.0       PUBLIC        PWM_OUT
+  D:008AH         PUBLIC        TL0
+  D:008BH         PUBLIC        TL1
+  B:0088H.4       PUBLIC        TR0
+  B:0088H.6       PUBLIC        TR1
+  D:00C8H         PUBLIC        T2CON
+  D:0008H         PUBLIC        Timer0_Reload
+  D:000AH         PUBLIC        Timer1_Reload
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          TIMER0_INIT
+  C:021FH         LINE#         9
+  C:021FH         LINE#         10
+  C:021FH         LINE#         11
+  C:0222H         LINE#         12
+  C:0225H         LINE#         14
+  C:0227H         LINE#         16
+  C:0229H         LINE#         17
+  -------         ENDPROC       TIMER0_INIT
+  -------         PROC          TIMER1_INIT
+  C:022AH         LINE#         20
+  C:022AH         LINE#         21
+  C:022AH         LINE#         22
+  C:022DH         LINE#         23
+  C:0230H         LINE#         25
+  C:0232H         LINE#         27
+  C:0234H         LINE#         28
+  -------         ENDPROC       TIMER1_INIT
+  -------         PROC          _SET_PWM_PARAMS
+  D:000CH         SYMBOL        period
+  D:000EH         SYMBOL        duty_cycle
+  -------         DO            
+  D:0004H         SYMBOL        temp
+  -------         ENDDO         
+  C:0168H         LINE#         35
+  C:016EH         LINE#         36
+  C:016EH         LINE#         39
+  C:0179H         LINE#         40
+  C:0183H         LINE#         41
+  C:0187H         LINE#         42
+  C:0187H         LINE#         43
+  C:018AH         LINE#         45
+  C:018AH         LINE#         46
+  C:018FH         LINE#         47
+  C:018FH         LINE#         48
+  C:0192H         LINE#         50
+  C:0192H         LINE#         54
+  C:019DH         LINE#         55
+  C:01AFH         LINE#         57
+  C:01CCH         LINE#         58
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  12/16/2025  16:07:15  PAGE 4
+
+
+  C:01DEH         LINE#         60
+  C:01E0H         LINE#         62
+  C:01E4H         LINE#         63
+  C:01E7H         LINE#         64
+  C:01E9H         LINE#         65
+  -------         ENDPROC       _SET_PWM_PARAMS
+  -------         PROC          TIMER0_ISR
+  C:01EAH         LINE#         68
+  C:01ECH         LINE#         70
+  C:01EEH         LINE#         71
+  C:01F0H         LINE#         73
+  C:01F4H         LINE#         74
+  C:01F7H         LINE#         75
+  C:01F9H         LINE#         76
+  -------         ENDPROC       TIMER0_ISR
+  -------         PROC          TIMER1_ISR
+  C:01FCH         LINE#         79
+  C:01FEH         LINE#         81
+  C:0200H         LINE#         82
+  C:0202H         LINE#         84
+  C:0206H         LINE#         85
+  C:0209H         LINE#         86
+  C:020BH         LINE#         87
+  -------         ENDPROC       TIMER1_ISR
+  -------         PROC          MAIN
+  -------         DO            
+  D:0006H         SYMBOL        pwm_period
+  D:0005H         SYMBOL        pwm_duty
+  -------         ENDDO         
+  C:020EH         LINE#         90
+  C:020EH         LINE#         91
+  C:020EH         LINE#         92
+  C:0212H         LINE#         93
+  C:0214H         LINE#         94
+  C:0217H         LINE#         95
+  C:021AH         LINE#         97
+  C:021DH         LINE#         98
+  C:021DH         LINE#         99
+  C:021DH         LINE#         101
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        ?C?LMUL
+  C:001EH         PUBLIC        ?C?LMUL
+  -------         ENDMOD        ?C?LMUL
+
+  -------         MODULE        ?C?ULDIV
+  C:00A9H         PUBLIC        ?C?ULDIV
+  -------         ENDMOD        ?C?ULDIV
+
+  -------         MODULE        ?C?LIMUL
+  C:013BH         PUBLIC        ?C?LIMUL
+  -------         ENDMOD        ?C?LIMUL
+
+Program Size: data=16.0 xdata=0 code=556
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
